@@ -1,7 +1,9 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from ipaddress import IPv4Address, IPv6Address
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 from app.db.models import PingbackProtocol, SubscriptionProvider, SubscriptionStatus
 
@@ -62,6 +64,15 @@ class PingbackRead(BaseModel):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_validator("source_ip", mode="before")
+    @classmethod
+    def normalize_source_ip(cls, value: object | None) -> str | None:
+        if value is None or isinstance(value, str):
+            return value
+        if isinstance(value, (IPv4Address, IPv6Address)):
+            return str(value)
+        return str(value)
 
 
 class CheckoutSessionResponse(BaseModel):
