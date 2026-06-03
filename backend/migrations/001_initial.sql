@@ -61,3 +61,7 @@ CREATE INDEX ix_subscriptions_user_status ON subscriptions(user_id, status);
 CREATE INDEX ix_payloads_user_created ON payloads(user_id, created_at DESC);
 CREATE INDEX ix_pingbacks_user_created ON pingbacks(user_id, created_at DESC);
 CREATE INDEX ix_pingbacks_payload_created ON pingbacks(payload_id, created_at DESC);
+
+GRANT ALL ON ALL TABLES IN SCHEMA public TO reping;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO reping;
+GRANT USAGE ON SCHEMA public TO reping;
