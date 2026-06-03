@@ -29,6 +29,7 @@ async def create_checkout_session(user_id: UUID, email: str) -> str:
         cancel_url=f"{settings.frontend_url}/billing/cancelled?provider=stripe",
         allow_promotion_codes=False,
         metadata={"user_id": str(user_id)},
+        subscription_data={"metadata": {"user_id": str(user_id)}},
     )
     return checkout_session.url
 
@@ -66,7 +67,10 @@ async def handle_webhook(request: Request, session: AsyncSession) -> dict[str, s
         await _persist_stripe_subscription(session, user_id, data["customer"], subscription)
     elif event_type in {"customer.subscription.created", "customer.subscription.updated", "customer.subscription.deleted"}:
         subscription = data
-        user_id = UUID(subscription["metadata"].get("user_id") or subscription.get("client_reference_id"))
+        user_id_value = subscription.get("metadata", {}).get("user_id")
+        if not user_id_value:
+            return {"status": "ignored"}
+        user_id = UUID(user_id_value)
         await _persist_stripe_subscription(session, user_id, subscription.get("customer"), subscription)
 
     return {"status": "ok"}

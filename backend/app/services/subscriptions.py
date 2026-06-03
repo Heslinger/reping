@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from decimal import Decimal
 from uuid import UUID
 
 from sqlalchemy import select
@@ -28,7 +29,7 @@ async def upsert_subscription(
         subscription = Subscription(
             user_id=user_id,
             provider=provider,
-            price_usd=get_settings().subscription_price_usd,
+            price_usd=Decimal(get_settings().subscription_price_usd),
         )
         session.add(subscription)
 

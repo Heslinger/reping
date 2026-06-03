@@ -1,6 +1,7 @@
 import enum
 import uuid
 from datetime import UTC, datetime
+from decimal import Decimal
 
 from sqlalchemy import DateTime, Enum, ForeignKey, Index, Numeric, String, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import INET, JSONB, UUID
@@ -66,7 +67,7 @@ class Subscription(Base):
         default=SubscriptionStatus.incomplete,
         nullable=False,
     )
-    price_usd: Mapped[float] = mapped_column(Numeric(6, 2), nullable=False)
+    price_usd: Mapped[Decimal] = mapped_column(Numeric(6, 2), nullable=False)
     current_period_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False)

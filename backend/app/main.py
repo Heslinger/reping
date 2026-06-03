@@ -57,9 +57,11 @@ api.include_router(payments.router)
 
 app.mount("/api", api)
 app.include_router(websocket.router)
-app.include_router(pingbacks.capture_router)
 
 
 @app.get("/healthz", tags=["health"])
 async def healthz() -> dict[str, str]:
     return {"status": "ok"}
+
+
+app.include_router(pingbacks.capture_router)

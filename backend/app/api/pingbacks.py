@@ -33,8 +33,8 @@ async def capture_path_pingback(token: str, request: Request, session: AsyncSess
     return Response(content="ok\n", media_type="text/plain", status_code=status.HTTP_202_ACCEPTED)
 
 
-@capture_router.api_route("/", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"])
-async def capture_host_pingback(request: Request, session: AsyncSession = Depends(get_session)) -> Response:
+@capture_router.api_route("/{wildcard_path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"])
+async def capture_host_pingback(wildcard_path: str, request: Request, session: AsyncSession = Depends(get_session)) -> Response:
     await _capture_request(request, session)
     return Response(content="ok\n", media_type="text/plain", status_code=status.HTTP_202_ACCEPTED)
 
